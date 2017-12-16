@@ -87,35 +87,36 @@ My final model consisted of the following layers:
 
 This is a LeNet architecture with two dropout layers for regularisation.
 
-#### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyper-parameters such as learning rate.
+#### Model Choice and Tuning
+
+A LeNet architecture is chosen because it is a proven model for learning image based data sets. The convolution layers can recognise features on various scales and is independent of the location of the feature inside the image.
 
 starting from a BATCH_SIZE of 128 and a learning rate of 0.001, it is found that increasing number of epochs improved validation accuracy while changing learning rate in either direction made very little difference. BATCH_SIZE of 32 and a learning rate of 0.001.
 
 The number of EPOCHS to run is constrained by the time and computing resources available. 20 EPOCHS was run and the final model was taken at the epoch where the validation accuracy was highest. This is an early termination regularisation where the model is taken at the highest accuracy point during the training process. In theory, if more time was available one could run more EPOCHS and could probably obtain a higher accuracy model.
 
-#### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
-
-A LeNet architecture is chosen because it is a proven model for learning image based data sets. The convolution layers can recognise features on various scales and is independent of the location of the feature inside the image.
-
-It is observed during training that the testing data set accuracy is lower than the validation data accuracy. This suggest possible over-fitting. Hence the dropout layers are added as additional regularisation. If the drop rate of the layer is set too high, the model learns too slowly. A final rate of 0.5 is chosen for balance of training speed and regularisation effectiveness.
+It is observed during training that the testing data set accuracy is lower than the validation data accuracy. This suggest possible over-fitting. Hence the dropout layers are added as additional regularisation. If the drop rate of the layer is set too high, the model learns too slowly. A final rate of 0.55 (keep_prob 0.45) is chosen for balance of training speed and regularisation effectiveness. It is noticed that even with very high dropout rate, the test set accuracy is consistently lower than the other two sets. There is a possibility that the test set contains samples with unique features now present in the other two data sets.
 
 My final model results were:
-* training set accuracy of 0.979
-* validation set accuracy of 0.970
-* test set accuracy of 0.941
+* training set accuracy of 0.977
+* validation set accuracy of 0.975
+* test set accuracy of 0.946
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to over-fitting or under-fitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
-
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
-
+Here is the list of the classes with the worst precision and recall:
+```
+class_id precision recall sign_name
+27       57.32%    78.33% Pedestrians
+21       94.67%    78.89% Double curve
+26       69.19%    81.11% Traffic signals
+30       82.89%    84.00% Beware of ice/snow
+18       94.81%    84.36% General caution
+40       71.03%    84.44% Roundabout mandatory
+22       92.24%    89.17% Bumpy road
+ 3       94.15%    89.33% Speed limit (60km/h)
+20       82.83%    91.11% Dangerous curve to the right
+42       95.35%    91.11% End of no passing by vehicles over 3.5 metric tons
+```
+Adding extra dummy data have greatly improved the prediction for classes with fewer data points.
 
 ### Test a Model on New Images
 
@@ -125,44 +126,54 @@ Here are five German traffic signs that I found on the web:
 
 <img src="examples/5-images-from-net.png" width="400">
 
-All the images have been padded to square and resized to 32x32 pixels. The 2nd and 5th image might be difficult to recognise because they occupy very small portion of the whole image. The 4th image has a glare which might cause difficulty as well.
-
-Here are the results of the prediction:
+All the images have been padded to square and resized to 32x32 pixels. The 2nd and 5th image might be difficult to recognise because they occupy very small portion of the whole image. The 4th image has a glare which might cause difficulty as well. Here are the results of the prediction:
 
 |Image                                   |Prediction                              |
 |:--------------------------------------:|:--------------------------------------:|
-|Dangerous curve to the right            |Children crossing                       |
-|No vehicles                             |No entry                                |
-|Beware of ice/snow                      |Right-of-way at the next intersection   |
-|Beware of ice/snow                      |Road work                               |
-|Speed limit (80km/h)                    |Speed limit (20km/h)                    |
-|Slippery road                           |Speed limit (30km/h)                    |
+|Children crossing                       |Dangerous curve to the right            |
+|No entry                                |No vehicles                             |
+|Right-of-way at the next intersection   |Beware of ice/snow                      |
+|Road work                               |Beware of ice/snow                      |
+|Speed limit (30km/h)                    |Slippery road                           |
 
 The accuracy is zero. We must have a problem. By examining the training data set and the images above it is found that the training images are framed such that the traffic sign is centred and covers most of the image. Hence we need to re-frame the images found online in order for them to recognised. By manually cropping the images, we have the following:
 
 <img src="examples/5-images-from-net-cropped.png" width="400">
 
-The model was then able to currently recognise 3 out of the 5 pictures giving an accuracy of 60%.
+The model was then able to currently recognise 4 out of the 5 pictures giving an accuracy of 80%.
 
 |Image                                   |Prediction                              |
 |:--------------------------------------:|:--------------------------------------:|
-|Right-of-way at the next intersection   |Children crossing                       |
-|No entry                                |No entry                                |
-|Beware of ice/snow                      |Right-of-way at the next intersection   |
-|Speed limit (80km/h)                    |Road work                               |
+|Children crossing                       |Bicycles crossing                       |
+|Road work                               |Road work                               |
 |Speed limit (30km/h)                    |Speed limit (30km/h)                    |
+|No entry                                |No entry                                |
+|Right-of-way at the next intersection   |Right-of-way at the next intersection   |
 
 
-By calculating the softmax probabilities of the model output we can see the confidence of the predictions. Image 2 and 5 were predicted correctly with near 100% confidence. The top 5 softmax probabilities of the 2 wrong predicitons can be seen below.
+By calculating the softmax probabilities of the model output we can see the confidence of the predictions. Image 2,3,4 were predicted correctly with near 100% confidence. The top 5 softmax probabilities of the 2 less confident predictions can be seen below. Image 5 although was predicted correctly, it only had about 50% confidence.
 
-|Image 1 (Children crossing                    )|Image 4 (Road work                  )|
-|:---------------------------------------------:|:-----------------------------------:|
-| 61.41% (Wild animals crossing                )| 62.64% (Speed limit (80km/h)       )|
-| 33.56% (Right-of-way at the next intersection)| 12.25% (Road narrows on the right  )|
-|  3.02% (Slippery road                        )|  9.80% (End of speed limit (80km/h))|
-|  1.76% (Children crossing                    )|  8.45% (Speed limit (30km/h)       )|
-|  0.12% (Road work                            )|  6.20% (Wild animals crossing      )|
+|Image 1                                        |Image 5                                       |
+|:---------------------------------------------:|:--------------------------------------------:|
+|13.96% (Bicycles crossing)                     |56.59% (Right-of-way at the next intersection)|
+|11.81% (Beware of ice/snow)                    |42.12% (Beware of ice/snow)                   |
+|10.20% (Roundabout mandatory)                  | 0.43% (Double curve)                         |
+| 8.24% (Right-of-way at the next intersection) | 0.33% (Slippery road)                        |
+| 5.23% (Children crossing)                     | 0.23% (Bicycles crossing)                    |
+
+Here are an visual representation of the predictions.
+
+<img src="examples/img_1_top5_predictions.png" width="400">
+<img src="examples/img_5_top5_predictions.png" width="400">
+
+It can be seen that the model is confused by similar triangular shaped signs. Because the low resolution, the model was not able to hone in on the exact shape inside the triangle.
 
 
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+### Visualizing the Neural Network
+
+The response of the convolution layers to an image is plotted below. The original image and the augmented image which feeds the network is plotted first. Followed by the response from the 6 features of the first layer convolution and 15 features of the second layer convolution.
+
+<img src="examples/visualise_weights_1.png" width="600">
+<img src="examples/visualise_weights_2.png" width="600">
+
+Looking at the the visualisation, it can be seen that the first level of convolution was picking out the edges in the image. The second level seem to be more vague. It responds to larger patch features. It is clear that the weights responds to the shape of the sign.
