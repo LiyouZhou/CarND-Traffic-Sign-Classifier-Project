@@ -87,15 +87,13 @@ My final model consisted of the following layers:
 
 This is a LeNet architecture with two dropout layers for regularisation.
 
-#### Model Tuning
+#### Model Choice and Tuning
+
+A LeNet architecture is chosen because it is a proven model for learning image based data sets. The convolution layers can recognise features on various scales and is independent of the location of the feature inside the image.
 
 starting from a BATCH_SIZE of 128 and a learning rate of 0.001, it is found that increasing number of epochs improved validation accuracy while changing learning rate in either direction made very little difference. BATCH_SIZE of 32 and a learning rate of 0.001.
 
 The number of EPOCHS to run is constrained by the time and computing resources available. 20 EPOCHS was run and the final model was taken at the epoch where the validation accuracy was highest. This is an early termination regularisation where the model is taken at the highest accuracy point during the training process. In theory, if more time was available one could run more EPOCHS and could probably obtain a higher accuracy model.
-
-#### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
-
-A LeNet architecture is chosen because it is a proven model for learning image based data sets. The convolution layers can recognise features on various scales and is independent of the location of the feature inside the image.
 
 It is observed during training that the testing data set accuracy is lower than the validation data accuracy. This suggest possible over-fitting. Hence the dropout layers are added as additional regularisation. If the drop rate of the layer is set too high, the model learns too slowly. A final rate of 0.55 (keep_prob 0.45) is chosen for balance of training speed and regularisation effectiveness. It is noticed that even with very high dropout rate, the test set accuracy is consistently lower than the other two sets. There is a possibility that the test set contains samples with unique features now present in the other two data sets.
 
@@ -163,17 +161,19 @@ By calculating the softmax probabilities of the model output we can see the conf
 | 8.24% (Right-of-way at the next intersection) | 0.33% (Slippery road)                        |
 | 5.23% (Children crossing)                     | 0.23% (Bicycles crossing)                    |
 
-Here are an visual representation of the predictions:
+Here are an visual representation of the predictions.
 
 <img src="examples/img_1_top5_predictions.png" width="400">
 <img src="examples/img_5_top5_predictions.png" width="400">
 
-One can see the model is confused by similar triangular shaped signs. Because the low resolution, the model was not able to hone in on the exact shape inside the triangle.
+It can be seen that the model is confused by similar triangular shaped signs. Because the low resolution, the model was not able to hone in on the exact shape inside the triangle.
 
 
 ### Visualizing the Neural Network
 
+The response of the convolution layers to an image is plotted below. The original image and the augmented image which feeds the network is plotted first. Followed by the response from the 6 features of the first layer convolution and 15 features of the second layer convolution.
+
 <img src="examples/visualise_weights_1.png" width="600">
 <img src="examples/visualise_weights_2.png" width="600">
 
-Looking at the the visualisation, it can be seen that the first level of convolution was picking out the edges in the image. The second level seem to be more vague. It responds to larger patch features.
+Looking at the the visualisation, it can be seen that the first level of convolution was picking out the edges in the image. The second level seem to be more vague. It responds to larger patch features. It is clear that the weights responds to the shape of the sign.
