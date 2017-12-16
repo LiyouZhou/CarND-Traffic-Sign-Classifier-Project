@@ -128,24 +128,21 @@ Here are five German traffic signs that I found on the web:
 
 <img src="examples/5-images-from-net.png" width="400">
 
-All the images have been padded to square and resized to 32x32 pixels. The 2nd and 5th image might be difficult to recognise because they occupy very small portion of the whole image. The 4th image has a glare which might cause difficulty as well.
-
-Here are the results of the prediction:
+All the images have been padded to square and resized to 32x32 pixels. The 2nd and 5th image might be difficult to recognise because they occupy very small portion of the whole image. The 4th image has a glare which might cause difficulty as well. Here are the results of the prediction:
 
 |Image                                   |Prediction                              |
 |:--------------------------------------:|:--------------------------------------:|
-|Dangerous curve to the right            |Children crossing                       |
-|No vehicles                             |No entry                                |
-|Beware of ice/snow                      |Right-of-way at the next intersection   |
-|Beware of ice/snow                      |Road work                               |
-|Speed limit (80km/h)                    |Speed limit (20km/h)                    |
-|Slippery road                           |Speed limit (30km/h)                    |
+|Children crossing                       |Dangerous curve to the right            |
+|No entry                                |No vehicles                             |
+|Right-of-way at the next intersection   |Beware of ice/snow                      |
+|Road work                               |Beware of ice/snow                      |
+|Speed limit (30km/h)                    |Slippery road                           |
 
 The accuracy is zero. We must have a problem. By examining the training data set and the images above it is found that the training images are framed such that the traffic sign is centred and covers most of the image. Hence we need to re-frame the images found online in order for them to recognised. By manually cropping the images, we have the following:
 
 <img src="examples/5-images-from-net-cropped.png" width="400">
 
-The model was then able to currently recognise 3 out of the 5 pictures giving an accuracy of 60%.
+The model was then able to currently recognise 4 out of the 5 pictures giving an accuracy of 80%.
 
 |Image                                   |Prediction                              |
 |:--------------------------------------:|:--------------------------------------:|
@@ -176,7 +173,7 @@ One can see the model is confused by similar triangular shaped signs. Because th
 
 ### Visualizing the Neural Network
 
-<img src="examples/visualise_weights_1" width="400">
-<img src="examples/visualise_weights_2" width="400">
+<img src="examples/visualise_weights_1.png" width="600">
+<img src="examples/visualise_weights_2.png" width="600">
 
 Looking at the the visualisation, it can be seen that the first level of convolution was picking out the edges in the image. The second level seem to be more vague. It responds to larger patch features.
