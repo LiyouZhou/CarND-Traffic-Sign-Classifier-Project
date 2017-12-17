@@ -32,7 +32,7 @@ Here is a matrix of random images pulled out of each class. The first thing that
 
 #### Generate extra data
 
-Because there are significantly more samples of some classes than others in the training set, the model accuracy will have a bias toward the classes with more samples. Bad accuracy in a classes with a lot of samples leads to a large loss, hence the model will tend to avoid that. In order to make sure the model recognise all classes of traffic signs equally well, more data is generated. This is achieved by taking an available image and randomly zoom, rotate and translate to result in an new image. An example can be seen below:
+Because there are significantly more samples of some classes than others in the training set, the model accuracy will have a bias toward the classes with more samples. Bad accuracy in a classes with a lot of samples leads to a large loss, hence the model will tend to avoid that. In order to make sure the model recognise all classes of traffic signs equally well, more data is generated such that every class have exactly the same number of training images. This is achieved by taking an available image and randomly zoom, rotate and translate to result in an new image. An example can be seen below:
 
 <img src="examples/augmented_image.png" width="400">
 
