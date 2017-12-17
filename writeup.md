@@ -1,7 +1,4 @@
-# **Traffic Sign Recognition**
----
-
-**Build a Traffic Sign Recognition Project**
+# Traffic Sign Recognition
 
 The goals and steps of this project are the following:
 * Load the data set (see below for links to the project data set)
