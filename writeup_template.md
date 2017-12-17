@@ -1,12 +1,9 @@
 # **Traffic Sign Recognition**
-
-## Writeup
-
 ---
 
 **Build a Traffic Sign Recognition Project**
 
-The goals / steps of this project are the following:
+The goals and steps of this project are the following:
 * Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
 * Design, train and test a model architecture
@@ -14,9 +11,9 @@ The goals / steps of this project are the following:
 * Analyse the softmax probabilities of the new images
 * Summarize the results with a written report
 
-### Data Set Summary & Exploration
+## Data Set Summary & Exploration
 
-#### Basic summary of the data set
+### Basic summary of the data set
 
 - Number of training examples = 34799
 - Number of validation examples = 4410
@@ -24,47 +21,43 @@ The goals / steps of this project are the following:
 - Image data shape = (32, 32, 3)
 - Number of classes = 43
 
-#### Exploratory visualization of the dataset.
+### Exploratory visualization of the Datasets
 
 <img src="examples/histogram_of_classes.png" width="500">
-The above image shows the distribution of data among the different classes of signs. You can see there are very few data sets for certain classes of traffic signs compared to others which will no doubt impact the accuracy of the learning of those classes later.
+The above image shows the distribution of data among the different classes of signs. You can see there are very few data sets for certain classes of traffic signs compared to others which will no doubt impact the accuracy of the learning of those classes later. The distribution of classes is largely the same between train, validate and test sets.
 
 <img src="examples/random_sample_from_each_class.png" width="500">
 Here is a matrix of random images pulled out of each class. The first thing that can be noted is that the images appear to be taken under a large variety of lighting conditions. This does add to the complexity of the classification.
 
-### Design and Test a Model Architecture
+## Design and Test a Model Architecture
 
-#### Data pre-processing
+### Data pre-processing
 
-##### Generate extra data
+#### Generate extra data
 
-Because there are significantly more samples of some classes than others in the training set, the model accuracy will have a bias toward the classes with more samples. Bad accuracy in a classes with a lot of samples leads to a large loss. In order to make sure the model recognise all classes of traffic sign equally well, more data is generated. This is achieved by taking a available image and randomly zoom, rotate and translate to result in an new image. An example can be seen below:
+Because there are significantly more samples of some classes than others in the training set, the model accuracy will have a bias toward the classes with more samples. Bad accuracy in a classes with a lot of samples leads to a large loss, hence the model will tend to avoid that. In order to make sure the model recognise all classes of traffic signs equally well, more data is generated. This is achieved by taking an available image and randomly zoom, rotate and translate to result in an new image. An example can be seen below:
 
 <img src="examples/augmented_image.png" width="400">
 
-##### Grayscaling
+#### Grayscaling
 
-The image is turned into greyscale because all information needed to recognise a traffic sign is encoded into the shape of the sign, colour varies a lot with different lighting condition. Getting rid of the colour component reduces the complexity of the module and reduces the irregularities in the data.
-
-Here is the traffic sign images from the previous section after grayscaling.
+The image is turned into greyscale because all information needed to recognise a traffic sign is encoded into the shape of the sign, colour varies a lot with different lighting condition. Getting rid of the colour component reduces the complexity of the module and the irregularities in the data. Here is the traffic sign images from the previous section after grayscaling.
 
 <img src="examples/greyscale_normalised.png" width="400">
 
-##### Histogram Equalisation
+#### Histogram Equalisation
 
-This is an technique to even out the lighting condition of all the data further reducing data irregularities.
-
-Here is the traffic sign images from the previous section after grayscaling.
+Histogram Equalisation is a technique to even out the lighting condition and enhances features in images. This can reducing data irregularities and makes the data easier to learn. The CLAHE (Contrast Limited Adaptive Histogram Equalization) algorithm implemented in openCV is used. Because of the speed advantages provided by openCV, the more complicated Adaptive histogram algorithm can be used to augment all data in a reasonable time frame. Here is the traffic sign images from the previous section after equalisation.
 
 <img src="examples/equalised.png" width="400">
 
-It can be seen that images that are previous completely dark and hard to recognise and been brightened up and the whole dataset have the appearance of uniform lighting.
+It can be seen that images that are previous completely dark and hard to recognise had been brightened up and the whole dataset have the appearance of uniform lighting.
 
-##### Normalisation
+#### Normalisation
 
-Make input data normally distributed with mean 0 and std 1. This allow weights and hyper-parameters to stay in predictable range and makes training and tuning to be faster.
+All input data are scaled such that they appear normally distributed with mean 0 and std 1. This allows weights and hyper-parameters to stay in predictable range and makes training and tuning faster.
 
-#### Final model architecture
+## Final model architecture
 
 My final model consisted of the following layers:
 
@@ -87,15 +80,15 @@ My final model consisted of the following layers:
 
 This is a LeNet architecture with two dropout layers for regularisation.
 
-#### Model Choice and Tuning
+### Model Choice and Tuning
 
-A LeNet architecture is chosen because it is a proven model for learning image based data sets. The convolution layers can recognise features on various scales and is independent of the location of the feature inside the image.
+A LeNet architecture is chosen because it is a proven model for learning image based data sets. The convolution layers can recognise features on various scales and is independent of the location of the feature inside the image. This works well as the position of the traffic sign can be anywhere inside an image and it can still be recognised.
 
-starting from a BATCH_SIZE of 128 and a learning rate of 0.001, it is found that increasing number of epochs improved validation accuracy while changing learning rate in either direction made very little difference. BATCH_SIZE of 32 and a learning rate of 0.001.
+starting from a BATCH_SIZE of 128 and a learning rate of 0.001, it is found that reducing BATCH_SIZE improved validation accuracy while changing learning rate in either direction made very little difference. BATCH_SIZE of 32 and a learning rate of 0.001.
 
-The number of EPOCHS to run is constrained by the time and computing resources available. 20 EPOCHS was run and the final model was taken at the epoch where the validation accuracy was highest. This is an early termination regularisation where the model is taken at the highest accuracy point during the training process. In theory, if more time was available one could run more EPOCHS and could probably obtain a higher accuracy model.
+The number of EPOCHS to run is constrained by the time and computing resources available. 20 EPOCHS was run and the final model was taken at the epoch where the validation accuracy was highest. This is an early termination regularisation technique where the model is taken at the highest accuracy point during the training process. In theory, if more time was available one could run more EPOCHS and could probably obtain a higher accuracy model.
 
-It is observed during training that the testing data set accuracy is lower than the validation data accuracy. This suggest possible over-fitting. Hence the dropout layers are added as additional regularisation. If the drop rate of the layer is set too high, the model learns too slowly. A final rate of 0.55 (keep_prob 0.45) is chosen for balance of training speed and regularisation effectiveness. It is noticed that even with very high dropout rate, the test set accuracy is consistently lower than the other two sets. There is a possibility that the test set contains samples with unique features now present in the other two data sets.
+It is observed during training that the validation data set accuracy is lower than the training data accuracy. This suggest possible over-fitting. Hence the dropout layers are added as additional regularisation. If the drop rate of the layer is set too high, the model learns too slowly. A final rate of 0.55 (keep_prob 0.45) is chosen for balance of training speed and regularisation effectiveness. It is noticed that even with very high dropout rate, the test set accuracy is consistently lower than the other two sets. There is a possibility that the test set contains samples with unique features not present in the other two data sets.
 
 My final model results were:
 * training set accuracy of 0.977
@@ -116,11 +109,11 @@ class_id precision recall sign_name
 20       82.83%    91.11% Dangerous curve to the right
 42       95.35%    91.11% End of no passing by vehicles over 3.5 metric tons
 ```
-Adding extra dummy data have greatly improved the prediction for classes with fewer data points.
+Adding extra dummy data have greatly improved the prediction for classes with relatively few data points.
 
-### Test a Model on New Images
+## Test a Model on New Images
 
-#### Five German traffic signs found on the web
+### Five German traffic signs found on the web
 
 Here are five German traffic signs that I found on the web:
 
@@ -136,11 +129,11 @@ All the images have been padded to square and resized to 32x32 pixels. The 2nd a
 |Road work                               |Beware of ice/snow                      |
 |Speed limit (30km/h)                    |Slippery road                           |
 
-The accuracy is zero. We must have a problem. By examining the training data set and the images above it is found that the training images are framed such that the traffic sign is centred and covers most of the image. Hence we need to re-frame the images found online in order for them to recognised. By manually cropping the images, we have the following:
+The accuracy is zero. We must have a problem. By examining the training data set and the images above it is found that the training images are framed such that the traffic sign is centred and covers most of the image. Hence we need to re-frame the images in order for them to be recognised. By manually cropping the images, we have the following:
 
 <img src="examples/5-images-from-net-cropped.png" width="400">
 
-The model was then able to currently recognise 4 out of the 5 pictures giving an accuracy of 80%.
+The model was then able to recognise 4 out of the 5 pictures giving an accuracy of 80%.
 
 |Image                                   |Prediction                              |
 |:--------------------------------------:|:--------------------------------------:|
@@ -151,7 +144,7 @@ The model was then able to currently recognise 4 out of the 5 pictures giving an
 |Right-of-way at the next intersection   |Right-of-way at the next intersection   |
 
 
-By calculating the softmax probabilities of the model output we can see the confidence of the predictions. Image 2,3,4 were predicted correctly with near 100% confidence. The top 5 softmax probabilities of the 2 less confident predictions can be seen below. Image 5 although was predicted correctly, it only had about 50% confidence.
+By calculating the softmax probabilities of the model output we can see the confidence of the predictions. Image 2,3,4 were predicted correctly with near 100% confidence. The top 5 softmax probabilities of the 2 less confident predictions can be seen below. Although Image 5 was predicted correctly, it only had about 50% confidence.
 
 |Image 1                                        |Image 5                                       |
 |:---------------------------------------------:|:--------------------------------------------:|
@@ -166,7 +159,7 @@ Here are an visual representation of the predictions.
 <img src="examples/img_1_top5_predictions.png" width="400">
 <img src="examples/img_5_top5_predictions.png" width="400">
 
-It can be seen that the model is confused by similar triangular shaped signs. Because the low resolution, the model was not able to hone in on the exact shape inside the triangle.
+It can be seen that the model is confused by similar triangular shaped signs. Because the low resolution, the model was not able to hone in on the exact symbol inside the triangle.
 
 
 ### Visualizing the Neural Network
